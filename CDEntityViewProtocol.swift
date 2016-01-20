@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-/*
+/**
 CDEntityViewProtocol is the root protocol for simplifying the display of Core Data entities in data views (such as table views and collection views).
 This protocol and its extension handle the common feteched results tasks while the sub-protocols, CDEntityTableViewProtocol and CDEntityCollectionViewProtocol, handle the specifics for table views and collection views.
 

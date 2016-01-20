@@ -27,7 +27,6 @@ extension CDEntityCollectionViewProtocol {
         collectionView?.reloadData()
     }
     
-    // TODO: fix the FetchedResultsControllerDelegate functions below and add collection view functions.
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return self.fetchedResultsController?.sections?.count ?? 0
     }
