@@ -17,12 +17,11 @@ The implementer of this protocol can either be the view controller in charge of 
 Usage:
 Provide a connection to the collection view that is to be supplied with data and then implement configureCell(cell:, atIndex:) to setup the cell as needed for the perticular entity being displayed.
 */
-protocol CDEntityCollectionViewProtocol: CDEntityViewProtocol, UICollectionViewDataSource, UICollectionViewDelegate {
+protocol EntityCollectionViewDataSourceProtocol: EntityDataSourceProtocol, UICollectionViewDataSource, UICollectionViewDelegate {
     var collectionView: UICollectionView? {get set}
-    func configureCell(cell: UICollectionViewCell, atIndex indexPath: NSIndexPath)
 }
 
-extension CDEntityCollectionViewProtocol {
+extension EntityCollectionViewDataSourceProtocol {
     func reloadDataView() {
         collectionView?.reloadData()
     }
@@ -38,10 +37,16 @@ extension CDEntityCollectionViewProtocol {
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(self.cellReuseID(), forIndexPath: indexPath)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIDForIndexPath(indexPath: indexPath), forIndexPath: indexPath)
         configureCell(cell, atIndex:indexPath)
         return cell
     }
+    
+    func configureCell(cell: UICollectionViewCell, atIndex indexPath: NSIndexPath) {
+        let theCell = cell as! EntityCollectionViewCell
+        theCell.entity = self.fetchedResultsController.objectAtIndexPath(indexPath)
+    }
+
     
     // MARK: - FetchedResultsControllerDelegate
     // TODO: refactor this so that all the updates go into a batch with performBatchUpdates(_:, completion:). The issue will be with deletes being processed first in batches so other index paths will need to be modified.

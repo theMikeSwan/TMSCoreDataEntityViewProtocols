@@ -1,14 +1,10 @@
 //
 //  CDEntityViewProtocol.swift
 //  
-//
 //  Created by Mike Swan on 1/19/16.
-//
-//
 
 import UIKit
 import CoreData
-
 
 /*
 CDEntityTableViewProtocol builds on CDEntityViewProtocol adding the code needed for table views.
@@ -17,13 +13,11 @@ The implementer of this protocol can either be the view controller in charge of 
 Usage:
 Provide a connection to the table view that is to be supplied with data and then implement configureCell(cell:, atIndex:) to setup the cell as needed for the perticular entity being displayed.
 */
-protocol CDEntityTableViewProtocol: CDEntityViewProtocol, UITableViewDataSource {
+protocol EntityTableViewDataSourceProtocol: CDEntityViewProtocol, UITableViewDataSource {
     var tableView: UITableView? {get set}
-    /// This function must be implemented in order to properly configure the cells in the table view. It will be passed UITableViewCell that
-    func configureCell(cell: UITableViewCell, atIndex indexPath: NSIndexPath)
 }
 
-extension CDEntityTableViewProtocol {
+extension EntityTableViewDataSourceProtocol {
     func reloadDataView() {
         tableView?.reloadData()
     }
@@ -40,9 +34,14 @@ extension CDEntityTableViewProtocol {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseID(), forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseIDForIndexPath(indexPath: indexPath), forIndexPath: indexPath)
         self.configureCell(cell, atIndex: indexPath)
         return cell
+    }
+    
+    func configureCell(cell: UITableViewCell, atIndex indexPath: NSIndexPath) {
+        let theCell = cell as! EntityTableViewCell
+        theCell.entity = self.fetchedResultsController.objectAtIndexPath(indexPath)
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {

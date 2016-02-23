@@ -1,10 +1,7 @@
 //
 //  CDEntityViewProtocol.swift
-//  
 //
 //  Created by Mike Swan on 1/19/16.
-//
-//
 
 import UIKit
 import CoreData
@@ -16,12 +13,12 @@ This protocol and its extension handle the common feteched results tasks while t
 Usage:
 In order to use this protocol the class that implements it needs to provide an implementation of sortDescriptors() and entityName(). For more details see the documentation for each of those functions.
 */
-protocol CDEntityViewProtocol: NSFetchedResultsControllerDelegate {
+protocol EntityDataSourceProtocol: NSFetchedResultsControllerDelegate {
     var managedObjectContext: NSManagedObjectContext? {get set}
     var fetchedResultsController: NSFetchedResultsController? {get set}
     
-    /// Returns the reuse identifier that should be used for the table or collections view cells. The default is "managedObjectCell".
-    func cellReuseID() -> String
+    /// Returns the reuse identifier that should be used for the table or collections view cells. The default is "managedObjectCell". The index path of the cell is passed in to allow different resuse IDs to be used if needed.
+    func cellReuseIDForIndexPath(indexPath: NSIndexPath) -> String
     /// The desired size for fetch batches, the default is 20.
     func fetchReguestBatchSize() -> Int
     /// Starts the fetch request running, called when a non nil managed object context is set
@@ -36,7 +33,7 @@ protocol CDEntityViewProtocol: NSFetchedResultsControllerDelegate {
     func entityName() -> String
 }
 
-extension CDEntityViewProtocol {
+extension EntityDataSourceProtocol {
     var managedObjectContext: NSManagedObjectContext? {
         get {
             return self.managedObjectContext
@@ -48,7 +45,7 @@ extension CDEntityViewProtocol {
             }
         }
     }
-    func cellReuseID() -> String {
+    func cellReuseIDForIndexPath(indexPath: NSIndexPath) -> String {
         return "managedObjectCell"
     }
     func fetchBatchSize() -> Int {
